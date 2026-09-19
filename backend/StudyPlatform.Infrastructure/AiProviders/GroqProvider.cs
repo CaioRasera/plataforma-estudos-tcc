@@ -16,24 +16,27 @@ public class GroqProvider : IAiProvider
     private static readonly HttpClient _http = new();
     private readonly string _apiKey;
     private readonly string _model;
-    private readonly string _systemPromptTemplate;
+    private readonly string _flashcardPromptTemplate;
+    private readonly string _quizPromptTemplate;
 
     public GroqProvider(IConfiguration config)
     {
         _apiKey = config["AiProvider:Groq:ApiKey"]
             ?? throw new InvalidOperationException("AiProvider:Groq:ApiKey not configured.");
         _model = "openai/gpt-oss-120b";
-        _systemPromptTemplate = LoadPrompt("flashcard-system.txt");
+        _flashcardPromptTemplate = LoadPrompt("flashcard-system.txt");
+        _quizPromptTemplate = LoadPrompt("quiz-system.txt");
     }
 
-    public async Task<string> GenerateAsync(string prompt, string? context = null, CancellationToken cancellationToken = default)
+    public async Task<string> GenerateAsync(string prompt, string? context = null, string itemType = "Flashcard", CancellationToken cancellationToken = default)
     {
         return await ExecuteWithRetryAsync(async () =>
         {
-            var systemPrompt = _systemPromptTemplate.Replace("{prompt}", prompt);
+            var template = itemType == "Quiz" ? _quizPromptTemplate : _flashcardPromptTemplate;
+            var systemPrompt = template.Replace("{prompt}", prompt);
 
             var userContent = context is { Length: > 0 }
-                ? $"TEXTO PARA ANALISE:\n{context}"
+                ? "TEXTO PARA ANALISE:\n{context}"
                 : prompt;
 
             var body = new
@@ -49,7 +52,7 @@ public class GroqProvider : IAiProvider
             };
 
             using var request = new HttpRequestMessage(HttpMethod.Post, "https://api.groq.com/openai/v1/chat/completions");
-            request.Headers.Add("Authorization", $"Bearer {_apiKey}");
+            request.Headers.Add("Authorization", "Bearer {_apiKey}");
             request.Content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
 
             using var response = await _http.SendAsync(request, cancellationToken);
@@ -57,7 +60,7 @@ public class GroqProvider : IAiProvider
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                throw new HttpRequestException($"Groq error ({response.StatusCode}): {errorContent}", null, response.StatusCode);
+                throw new HttpRequestException("Groq error ({response.StatusCode}): {errorContent}", null, response.StatusCode);
             }
 
             using var doc = await JsonDocument.ParseAsync(
@@ -69,11 +72,10 @@ public class GroqProvider : IAiProvider
                 .GetProperty("content")
                 .GetString() ?? "[]";
 
-            // Strip residual markdown code fences if the model wraps the JSON
             content = content.Trim();
-            if (content.StartsWith("` + '``' + `json")) content = content[7..];
-            if (content.StartsWith("` + '``' + `"))     content = content[3..];
-            if (content.EndsWith("` + '``' + `"))       content = content[..^3];
+            if (content.StartsWith("`json")) content = content.Substring(7);
+            if (content.StartsWith("`"))     content = content.Substring(3);
+            if (content.EndsWith("`"))       content = content.Substring(0, content.Length - 3);
 
             return content.Trim();
         });
@@ -87,10 +89,10 @@ public class GroqProvider : IAiProvider
     private static string LoadPrompt(string fileName)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = $"StudyPlatform.Infrastructure.Prompts.{fileName}";
+        var resourceName = "StudyPlatform.Infrastructure.Prompts.{fileName}";
 
         using var stream = assembly.GetManifestResourceStream(resourceName)
-            ?? throw new FileNotFoundException($"Embedded prompt not found: {resourceName}");
+            ?? throw new FileNotFoundException("Embedded prompt not found: {resourceName}");
         using var reader = new StreamReader(stream, Encoding.UTF8);
         return reader.ReadToEnd();
     }

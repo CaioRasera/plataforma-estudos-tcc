@@ -9,7 +9,7 @@ using StudyPlatform.Domain.Interfaces.Repositories;
 namespace StudyPlatform.Application.Services;
 
 /// <summary>
-/// Implementa o algoritmo SM-2 (Wozniak) de repetição espaçada.
+/// Implementa o algoritmo SM-2 (Wozniak) de repetiÃ§Ã£o espaÃ§ada.
 /// </summary>
 public class SpacedRepetitionService
 {
@@ -29,7 +29,7 @@ public class SpacedRepetitionService
 
     public async Task<List<ReviewItemDto>> GetDueReviewsAsync(Guid userId, Guid? documentId = null)
     {
-        // 1. Puxar documentos para mapear Título
+        // 1. Puxar documentos para mapear TÃ­tulo
         var docs = await _documentRepository.GetByUserIdAsync(userId);
         var docMap = docs.ToDictionary(d => d.Id, d => d.Title);
 
@@ -46,7 +46,7 @@ public class SpacedRepetitionService
         
         var newItems = allItems
             .Where(a => !allProgress.Any(p => p.ItemId == a.Id))
-            .Take(20) // Limite diário de novos itens (prática padrão SRS)
+            .Take(20) // Limite diÃ¡rio de novos itens (prÃ¡tica padrÃ£o SRS)
             .ToList();
 
         var result = dueItems.Select(p => new ReviewItemDto
@@ -59,7 +59,7 @@ public class SpacedRepetitionService
             Topic = p.Item.Topic,
             Question = p.Item.Question,
             Answer = p.Item.Answer,
-            Options = p.Item.Options
+            WrongAnswers = p.Item.WrongAnswers
         }).ToList();
 
         var newProgresses = new List<UserItemProgress>();
@@ -88,7 +88,7 @@ public class SpacedRepetitionService
                 Topic = newItem.Topic,
                 Question = newItem.Question,
                 Answer = newItem.Answer,
-                Options = newItem.Options
+                WrongAnswers = newItem.WrongAnswers
             });
         }
 
@@ -138,3 +138,4 @@ public class SpacedRepetitionService
         await _progressRepository.UpdateAsync(progress);
     }
 }
+

@@ -13,7 +13,7 @@ public class ReviewItemDto
     public string Topic { get; set; } = string.Empty;
     public string Question { get; set; } = string.Empty;
     public string Answer { get; set; } = string.Empty;
-    public string? Options { get; set; }
+    public string? WrongAnswers { get; set; }
 }
 
 public class SubmitReviewDto
@@ -21,3 +21,4 @@ public class SubmitReviewDto
     public Guid ProgressId { get; set; }
     public int Quality { get; set; } // 0-5
 }
+

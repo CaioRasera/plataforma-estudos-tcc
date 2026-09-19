@@ -1,4 +1,4 @@
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using StudyPlatform.Domain.Interfaces;
 
@@ -19,9 +19,9 @@ public class HybridAiProvider : IAiProvider
         _gemini = gemini;
     }
 
-    public Task<string> GenerateAsync(string prompt, string? context = null, CancellationToken cancellationToken = default)
+    public Task<string> GenerateAsync(string prompt, string? context = null, string itemType = "Flashcard", CancellationToken cancellationToken = default)
     {
-        return _groq.GenerateAsync(prompt, context, cancellationToken);
+        return _groq.GenerateAsync(prompt, context, itemType, cancellationToken);
     }
 
     public Task<float[]> EmbedAsync(string text, CancellationToken cancellationToken = default)

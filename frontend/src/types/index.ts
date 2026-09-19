@@ -18,6 +18,7 @@ export interface ReviewItemDto {
   question: string;
   answer: string;
   options?: string;
+  wrongAnswers?: string;
 }
 
 export interface BalanceDto {

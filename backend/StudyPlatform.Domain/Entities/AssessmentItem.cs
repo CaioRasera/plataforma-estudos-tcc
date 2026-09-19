@@ -13,8 +13,9 @@ public class AssessmentItem
     public string Type { get; set; } = string.Empty; // "Flashcard" or "Quiz"
     public string Question { get; set; } = string.Empty;
     public string Answer { get; set; } = string.Empty;
-    public string? Options { get; set; } // JSON array
+    public string? WrongAnswers { get; set; }
     public string? Topic { get; set; }
     public Guid[]? SourceChunkIds { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
+

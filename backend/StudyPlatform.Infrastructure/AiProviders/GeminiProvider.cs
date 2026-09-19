@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -21,19 +21,19 @@ public class GeminiProvider : IAiProvider
     public GeminiProvider(IConfiguration config)
     {
         _apiKey = config["AiProvider:Gemini:ApiKey"]
-            ?? throw new InvalidOperationException("AiProvider:Gemini:ApiKey não configurado.");
+            ?? throw new InvalidOperationException("AiProvider:Gemini:ApiKey nÃ£o configurado.");
         _model = config["AiProvider:Gemini:Model"] ?? "gemini-3.5-flash";
         _embeddingModel = config["AiProvider:Gemini:EmbeddingModel"] ?? "gemini-embedding-2";
     }
 
-    public async Task<string> GenerateAsync(string prompt, string? context = null, CancellationToken cancellationToken = default)
+    public async Task<string> GenerateAsync(string prompt, string? context = null, string itemType = "Flashcard", CancellationToken cancellationToken = default)
     {
         return await ExecuteWithRetryAsync(async () =>
         {
             const string systemInstruction =
-                "Você é um criador de flashcards. Extraia as informações mais importantes do texto. " +
-                "Você DEVE retornar ESTRITAMENTE um ARRAY JSON contendo até 5 flashcards importantes. " +
-                "Formato exato: [{\"question\":\"sua pergunta\", \"answer\":\"sua resposta\"}]. Não use markdown.";
+                "VocÃª Ã© um criador de flashcards. Extraia as informaÃ§Ãµes mais importantes do texto. " +
+                "VocÃª DEVE retornar ESTRITAMENTE um ARRAY JSON contendo atÃ© 5 flashcards importantes. " +
+                "Formato exato: [{\"question\":\"sua pergunta\", \"answer\":\"sua resposta\"}]. NÃ£o use markdown.";
 
             var userContent = context is { Length: > 0 }
                 ? $"TEXTO:\n{context}"

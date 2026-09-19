@@ -97,8 +97,11 @@ public class DocumentProcessorService
 
                     try
                     {
-                        var prompt = $"Gere ATÉ {targetPerChunk} flashcards essenciais a partir deste trecho, respeitando rigidamente as regras de qualidade.";
-                        var aiResponse = await aiProvider.GenerateAsync(prompt, chunk.Content);
+                        var itemType = Random.Shared.NextDouble() < 0.7 ? "Flashcard" : "Quiz";
+                        var promptText = itemType == "Quiz"
+                            ? $"Gere até {targetPerChunk} questões de múltipla escolha a partir deste trecho."
+                            : $"Gere até {targetPerChunk} flashcards essenciais a partir deste trecho, respeitando rigidamente as regras de qualidade.";
+                        var aiResponse = await aiProvider.GenerateAsync(promptText, chunk.Content, itemType);
 
                         int start = aiResponse.IndexOf('[');
                         int end = aiResponse.LastIndexOf(']');
@@ -119,11 +122,21 @@ public class DocumentProcessorService
                                         break;
                                     }
 
-                                    if (parsed.TryGetValue("question", out var jq) && parsed.TryGetValue("answer", out var ja))
+                                    if (parsed.TryGetValue("question", out var jq))
                                     {
                                         string q = jq.GetString() ?? "";
-                                        string a = ja.GetString() ?? "";
                                         string t = parsed.TryGetValue("topic", out var jt) ? jt.GetString() ?? "Geral" : "Geral";
+
+                                        bool isQuiz = parsed.TryGetValue("correctAnswer", out var jca);
+                                        string a = isQuiz
+                                            ? (jca.GetString() ?? "")
+                                            : (parsed.TryGetValue("answer", out var ja) ? ja.GetString() ?? "" : "");
+
+                                        string? wrongAnswersJson = null;
+                                        if (isQuiz && parsed.TryGetValue("wrongAnswers", out var jwa))
+                                        {
+                                            wrongAnswersJson = jwa.GetRawText();
+                                        }
 
                                         if (!string.IsNullOrWhiteSpace(q) && !string.IsNullOrWhiteSpace(a))
                                         {
@@ -132,10 +145,11 @@ public class DocumentProcessorService
                                                 Id = Guid.NewGuid(),
                                                 DocumentId = document.Id,
                                                 UserId = document.UserId,
-                                                Type = "Flashcard",
+                                                Type = isQuiz ? "Quiz" : "Flashcard",
                                                 Question = q,
                                                 Answer = a,
                                                 Topic = t,
+                                                WrongAnswers = wrongAnswersJson,
                                                 SourceChunkIds = new[] { chunk.Id },
                                                 CreatedAt = DateTime.UtcNow
                                             });
