@@ -23,7 +23,7 @@ export function Layout({ children }: LayoutProps) {
   useEffect(() => {
     api.get<BalanceDto>('/payment/balance')
       .then(res => setBalance(res.data))
-      .catch(() => {}); // silent fail for MVP
+      .catch(() => {});
   }, [location.pathname]);
 
   const navItems = [

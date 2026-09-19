@@ -4,6 +4,10 @@ using StudyPlatform.Domain.Interfaces;
 
 namespace StudyPlatform.Infrastructure.AiProviders;
 
+/// <summary>
+/// Routes AI calls to the appropriate provider based on the operation type.
+/// Text generation uses Groq; embedding uses Gemini.
+/// </summary>
 public class HybridAiProvider : IAiProvider
 {
     private readonly GroqProvider _groq;
@@ -17,13 +21,11 @@ public class HybridAiProvider : IAiProvider
 
     public Task<string> GenerateAsync(string prompt, string? context = null, CancellationToken cancellationToken = default)
     {
-        // Usa a Groq para gerar os textos velozmente sem limite de 20 requests/dia
         return _groq.GenerateAsync(prompt, context, cancellationToken);
     }
 
     public Task<float[]> EmbedAsync(string text, CancellationToken cancellationToken = default)
     {
-        // Mantém o Gemini apenas para gerar os vetores matemáticos
         return _gemini.EmbedAsync(text, cancellationToken);
     }
 }

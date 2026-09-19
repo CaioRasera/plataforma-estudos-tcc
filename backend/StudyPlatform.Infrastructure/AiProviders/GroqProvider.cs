@@ -19,7 +19,6 @@ public class GroqProvider : IAiProvider
     {
         _apiKey = config["AiProvider:Groq:ApiKey"]
             ?? throw new InvalidOperationException("AiProvider:Groq:ApiKey nÃ£o configurado.");
-        // Mudando para um modelo maior para garantir inteligÃªncia e respeito Ã s instruÃ§Ãµes
         _model = "openai/gpt-oss-120b";
     }
 
@@ -50,7 +49,7 @@ public class GroqProvider : IAiProvider
                     new { role = "system",  content = systemPrompt },
                     new { role = "user",    content = userContent  }
                 },
-                temperature = 0.2, // Menor temperatura para evitar alucinaÃ§Ãµes (era 0.3)
+                temperature = 0.2,
                 max_tokens = 4000
             };
 

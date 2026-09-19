@@ -120,8 +120,7 @@ public class GeminiProvider : IAiProvider
             catch (HttpRequestException ex) when ((int)ex.StatusCode == 429 && retries < maxRetries)
             {
                 retries++;
-                // Quando cai no limite (20 por minuto), a IA pede ~35s de espera.
-                // Vamos hibernar a thread por 45 segundos para garantir que a cota reseta.
+                // Rate limit reached: wait 45s to ensure quota resets before retrying.
                 await Task.Delay(45000);
             }
             catch (Exception) when (retries < maxRetries)
