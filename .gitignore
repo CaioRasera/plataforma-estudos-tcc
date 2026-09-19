@@ -26,3 +26,10 @@ specs/
 implementation_plan.md
 task.md
 walkthrough.md
+
+# Maintenance/debug scripts (not part of the application)
+backend/CheckDB/
+backend/TestAi/
+backend/Dropper/
+backend/DropTables.csx
+backend/drop.sql
