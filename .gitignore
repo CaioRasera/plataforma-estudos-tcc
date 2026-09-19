@@ -1,0 +1,28 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+packages/
+appsettings.Development.json
+
+# Node/React
+node_modules/
+dist/
+build/
+*.log
+.env.local
+.env
+
+# Universal
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+# Speckit / AI Agents
+.agents/
+.specify/
+specs/
+implementation_plan.md
+task.md
+walkthrough.md
