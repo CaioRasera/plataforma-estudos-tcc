@@ -17,11 +17,11 @@ Através de um algoritmo otimizado de **Repetição Espaçada**, a plataforma ag
 Como as chaves de API e conexão de banco de dados não são versionadas por segurança, você precisará configurar suas variáveis locais.
 
 1. Clone o repositório.
-2. Na pasta ackend/StudyPlatform.API, crie o arquivo ppsettings.Development.json baseado nas chaves necessárias.
+2. Na pasta Backend/StudyPlatform.API, crie o arquivo ppsettings.Development.json baseado nas chaves necessárias.
 3. Inicie o Backend: dotnet run (porta 5245)
 4. Inicie o Frontend: 
-pm install e 
-pm run dev (porta 5173)
+npm install e 
+npm run dev (porta 5173)
 
 ## 👤 Autor
 Desenvolvido como projeto de Trabalho de Conclusão de Curso (TCC).
