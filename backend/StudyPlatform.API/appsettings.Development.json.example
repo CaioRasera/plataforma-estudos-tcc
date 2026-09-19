@@ -1,0 +1,15 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=<supabase-host>;Database=postgres;Username=postgres;Password=<supabase-password>;Port=5432"
+  },
+  "Jwt": {
+    "Key": "qualquer-chave-segura-min-32-chars",
+    "Issuer": "StudyPlatformAPI",
+    "Audience": "StudyPlatformFrontend"
+  },
+  "AiProvider": {
+    "Type": "Groq",
+    "Groq": { "ApiKey": "gsk_SEU_TOKEN_AQUI", "Model": "llama-3.1-8b-instant" },
+    "Gemini": { "ApiKey": "AIza_SEU_TOKEN_AQUI", "EmbeddingModel": "embedding-004" }
+  }
+}
