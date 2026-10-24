@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
@@ -86,10 +86,10 @@ public class GroqProvider : IAiProvider
     private static string LoadPrompt(string fileName)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = "StudyPlatform.Infrastructure.Prompts.{fileName}";
+        var resourceName = $"StudyPlatform.Infrastructure.Prompts.{fileName}";
 
         using var stream = assembly.GetManifestResourceStream(resourceName)
-            ?? throw new FileNotFoundException("Embedded prompt not found: {resourceName}");
+            ?? throw new FileNotFoundException($"Embedded prompt not found: {resourceName}");
         using var reader = new StreamReader(stream, Encoding.UTF8);
         return reader.ReadToEnd();
     }
