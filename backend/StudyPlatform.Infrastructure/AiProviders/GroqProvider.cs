@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
@@ -17,7 +17,6 @@ public class GroqProvider : IAiProvider
     private readonly string _apiKey;
     private readonly string _model;
     private readonly string _flashcardPromptTemplate;
-    private readonly string _quizPromptTemplate;
 
     public GroqProvider(IConfiguration config)
     {
@@ -25,18 +24,16 @@ public class GroqProvider : IAiProvider
             ?? throw new InvalidOperationException("AiProvider:Groq:ApiKey not configured.");
         _model = "openai/gpt-oss-120b";
         _flashcardPromptTemplate = LoadPrompt("flashcard-system.txt");
-        _quizPromptTemplate = LoadPrompt("quiz-system.txt");
     }
 
-    public async Task<string> GenerateAsync(string prompt, string? context = null, string itemType = "Flashcard", CancellationToken cancellationToken = default)
+    public async Task<string> GenerateAsync(string prompt, string? context = null, CancellationToken cancellationToken = default)
     {
         return await ExecuteWithRetryAsync(async () =>
         {
-            var template = itemType == "Quiz" ? _quizPromptTemplate : _flashcardPromptTemplate;
-            var systemPrompt = template.Replace("{prompt}", prompt);
+            var systemPrompt = _flashcardPromptTemplate.Replace("{prompt}", prompt);
 
             var userContent = context is { Length: > 0 }
-                ? "TEXTO PARA ANALISE:\n{context}"
+                ? $"TEXTO PARA ANALISE:\n{context}"
                 : prompt;
 
             var body = new

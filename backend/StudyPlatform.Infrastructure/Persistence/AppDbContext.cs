@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using StudyPlatform.Domain.Entities;
 
 namespace StudyPlatform.Infrastructure.Persistence;
@@ -43,13 +43,6 @@ public class AppDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => new { e.UserId, e.ItemId }).IsUnique();
         });
-
-                modelBuilder.Entity<AssessmentItem>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.WrongAnswers).HasColumnName("WrongAnswers");
-        });
-
         base.OnModelCreating(modelBuilder);
     }
 }

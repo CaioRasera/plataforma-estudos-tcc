@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -26,7 +26,7 @@ public class GeminiProvider : IAiProvider
         _embeddingModel = config["AiProvider:Gemini:EmbeddingModel"] ?? "gemini-embedding-2";
     }
 
-    public async Task<string> GenerateAsync(string prompt, string? context = null, string itemType = "Flashcard", CancellationToken cancellationToken = default)
+    public async Task<string> GenerateAsync(string prompt, string? context = null, CancellationToken cancellationToken = default)
     {
         return await ExecuteWithRetryAsync(async () =>
         {

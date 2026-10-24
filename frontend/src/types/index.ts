@@ -17,8 +17,6 @@ export interface ReviewItemDto {
   topic: string;
   question: string;
   answer: string;
-  options?: string;
-  wrongAnswers?: string;
 }
 
 export interface BalanceDto {

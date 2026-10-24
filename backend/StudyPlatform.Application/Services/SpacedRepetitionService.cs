@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,8 +69,7 @@ public class SpacedRepetitionService
                 Type = p.Item.Type,
                 Topic = p.Item.Topic,
                 Question = p.Item.Question,
-                Answer = p.Item.Answer,
-                WrongAnswers = p.Item.WrongAnswers
+                Answer = p.Item.Answer
             }).ToList();
 
             var newProgresses = new List<UserItemProgress>();
@@ -98,8 +97,7 @@ public class SpacedRepetitionService
                     Type = newItem.Type,
                     Topic = newItem.Topic,
                     Question = newItem.Question,
-                    Answer = newItem.Answer,
-                    WrongAnswers = newItem.WrongAnswers
+                    Answer = newItem.Answer
                 });
             }
 

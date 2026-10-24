@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace StudyPlatform.Domain.Entities;
@@ -10,10 +10,9 @@ public class AssessmentItem
     public Document Document { get; set; } = null!;
     public Guid UserId { get; set; }
     public User User { get; set; } = null!;
-    public string Type { get; set; } = string.Empty; // "Flashcard" or "Quiz"
+    public string Type { get; set; } = string.Empty; // "Flashcard"
     public string Question { get; set; } = string.Empty;
     public string Answer { get; set; } = string.Empty;
-    public string? WrongAnswers { get; set; }
     public string? Topic { get; set; }
     public Guid[]? SourceChunkIds { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

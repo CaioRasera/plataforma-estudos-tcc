@@ -13,7 +13,6 @@ public class ReviewItemDto
     public string Topic { get; set; } = string.Empty;
     public string Question { get; set; } = string.Empty;
     public string Answer { get; set; } = string.Empty;
-    public string? WrongAnswers { get; set; }
 }
 
 public class SubmitReviewDto
