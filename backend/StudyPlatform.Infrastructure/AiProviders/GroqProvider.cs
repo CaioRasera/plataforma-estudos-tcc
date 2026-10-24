@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
@@ -45,11 +45,11 @@ public class GroqProvider : IAiProvider
                     new { role = "user",   content = userContent  }
                 },
                 temperature = 0.2,
-                max_tokens = 4000
+                max_tokens = 1000
             };
 
             using var request = new HttpRequestMessage(HttpMethod.Post, "https://api.groq.com/openai/v1/chat/completions");
-            request.Headers.Add("Authorization", "Bearer {_apiKey}");
+            request.Headers.Add("Authorization", $"Bearer {_apiKey}");
             request.Content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
 
             using var response = await _http.SendAsync(request, cancellationToken);
@@ -57,7 +57,7 @@ public class GroqProvider : IAiProvider
             if (!response.IsSuccessStatusCode)
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
-                throw new HttpRequestException("Groq error ({response.StatusCode}): {errorContent}", null, response.StatusCode);
+                throw new HttpRequestException($"Groq error ({(int)response.StatusCode}): {errorContent}", null, response.StatusCode);
             }
 
             using var doc = await JsonDocument.ParseAsync(
@@ -100,6 +100,12 @@ public class GroqProvider : IAiProvider
         while (true)
         {
             try { return await action(); }
+            catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.TooManyRequests && retries < maxRetries)
+            {
+                retries++;
+                // Rate limit (429): aguarda 20s * tentativa antes de tentar novamente
+                await Task.Delay(20000 * retries);
+            }
             catch (Exception) when (retries < maxRetries)
             {
                 retries++;

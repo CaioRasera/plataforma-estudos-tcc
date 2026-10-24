@@ -97,6 +97,9 @@ public class DocumentProcessorService
 
                     try
                     {
+                        // Delay entre chunks para evitar rate limit do Groq (TPM)
+                        await Task.Delay(2000);
+
                         var prompt = $"Gere até {targetPerChunk} flashcards essenciais a partir deste trecho, respeitando rigidamente as regras de qualidade.";
                         var aiResponse = await aiProvider.GenerateAsync(prompt, chunk.Content);
 
